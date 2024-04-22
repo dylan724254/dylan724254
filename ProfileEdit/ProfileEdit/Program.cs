@@ -246,6 +246,7 @@ namespace ProfileEdit
             using var writer = File.CreateText(filePath);
             writer.WriteLine($"下一個 {(nextType == 1 ? "Ｏ" : "Ｘ")}<br/>");
             writer.WriteLine(stateText);
+            writer.WriteLine(GetSelectArea(newBoardState));
         }
     }
 }
