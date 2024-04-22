@@ -87,6 +87,7 @@ namespace ProfileEdit
         {
             var text = new StringBuilder();
             text.AppendLine("<br/><br/>選擇位置<br/>");
+            text.AppendLine();
             text.AppendLine("|1|2|3|");
             text.AppendLine("|:----:|:----:|:----:|");
             for (int i = 0; i <= 2; i++)
