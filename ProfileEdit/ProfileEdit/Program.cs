@@ -2,7 +2,7 @@
 {
     internal class Program
     {
-        const string pathPrefix = @"../../../../..";
+        const string pathPrefix = @"";
         const string profileFileName = "ReadMe.md";
         static void Main(string[] args)
         {
