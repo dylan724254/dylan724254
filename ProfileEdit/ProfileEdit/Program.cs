@@ -3,7 +3,7 @@
     internal class Program
     {
         const string pathPrefix = @"";
-        const string profileFileName = "ReadMe.md";
+        const string profileFileName = "README.md";
         static void Main(string[] args)
         {
             var text = args.Length > 0
