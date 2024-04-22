@@ -13,6 +13,9 @@ namespace ProfileEdit
         const string resourcePathPrefix = @"ProfileEdit/Resource";
         const string stateFileName = "state.txt";
 
+        const string _circle = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/o2.jpg?raw=true\" style=\"width:180px; height:180px\">";
+        const string _crosses = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/x2.jpg?raw=true\" style=\"width:180px; height:180px\">";
+        const string _none = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/none2.jpg?raw=true\" style=\"width:180px; height:180px\">";
         static void Main(string[] args)
         {
             if (args == null || args.Length != 1)
@@ -54,11 +57,8 @@ namespace ProfileEdit
 
             boardState[row, col] = ticTacType;
 
-            var result = CheckWinner(boardState);
-
             SaveState(boardState);
 
-            var nextType = GetNextType(boardState);
             var stateText = StateToDisplay(boardState);
 
             var filePath = Path.Combine(pathPrefix, profileFileName);
@@ -85,7 +85,36 @@ namespace ProfileEdit
 
         private static string GetSelectArea(int[,] boardState)
         {
-            return string.Empty;
+            var text = new StringBuilder();
+            text.AppendLine("<br/><br/>選擇位置<br/>");
+            text.AppendLine("|1|2|3|");
+            text.AppendLine("|:----:|:----:|:----:|");
+            for (int i = 0; i <= 2; i++)
+            {
+                text.AppendLine($"|{GetSelectPoint(boardState, i, 0)}|{GetSelectPoint(boardState, i, 1)}|{GetSelectPoint(boardState, i, 2)}|");
+            }
+            text.AppendLine("<br/>");
+            text.AppendLine($"重啟新局: <a href=\"https://github.com/dylan724254/dylan724254/issues/new?body=%E8%AB%8B%E9%BB%9E%E6%93%8ASubmit%20new%20issue%E4%B8%8D%E9%9C%80%E8%A6%81%E4%BF%AE%E6%94%B9%E4%BB%BB%E4%BD%95%E5%85%A7%E5%AE%B9Thanks&title=RE\">點擊</a>");
+
+            return text.ToString();
+        }
+
+        private static string GetSelectPoint(int[,] boardState, int row, int col)
+        {
+            if (boardState[row, col] != 0)
+            {
+                return "　";
+            }
+
+            var targetSite = row switch
+            {
+                0 => "A",
+                1 => "B",
+                2 => "C",
+                _ => throw new NotImplementedException()
+            } + (col + 1);
+
+            return $"<a href=\"https://github.com/dylan724254/dylan724254/issues/new?body=%E8%AB%8B%E9%BB%9E%E6%93%8ASubmit%20new%20issue%E4%B8%8D%E9%9C%80%E8%A6%81%E4%BF%AE%E6%94%B9%E4%BB%BB%E4%BD%95%E5%85%A7%E5%AE%B9Thanks&title={targetSite}\">點</a>";
         }
 
         private static int[,] GetState()
@@ -126,20 +155,20 @@ namespace ProfileEdit
 
             for (int i = 0; i <= 2; i++)
             {
+                text.Append("<div style=\"display: inline-block;\">");
                 var line = new string[3];
-
-
                 for (int j = 0; j <= 2; j++)
                 {
                     line[j] = boardState[i, j] switch
                     {
-                        0 => "　",
-                        1 => "Ｏ",
-                        2 => "Ｘ",
+                        0 => _none,
+                        1 => _circle,
+                        2 => _crosses,
                     };
                 }
 
-                text.Append(string.Join(",", line) + "<br/>");
+                text.Append(string.Join("", line));
+                text.Append("</div");
             }
 
             return text.ToString();
