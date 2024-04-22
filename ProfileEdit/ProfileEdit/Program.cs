@@ -168,7 +168,7 @@ namespace ProfileEdit
                 }
 
                 text.Append(string.Join("", line));
-                text.Append("</div");
+                text.Append("</div>");
             }
 
             return text.ToString();
