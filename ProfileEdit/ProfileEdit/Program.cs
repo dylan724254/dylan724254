@@ -22,13 +22,19 @@ namespace ProfileEdit
 
             var site = args[0];
 
-            if(!Regex.IsMatch(site, "[A,B,C][1,2,3]"))
+            if(!Regex.IsMatch(site, "([A,B,C][1,2,3]|RE)"))
             {
                 return;
             }
 
-            var state = GetState();
-            var ticTacType = GetNextType(state);
+            if(site == "RE")
+            {
+                Restart();
+                return;
+            }
+
+            var boardState = GetState();
+            var ticTacType = GetNextType(boardState);
 
             var row = Convert.ToInt32(site.Substring(1, 1)) - 1;
             var col = site.Substring(0, 1) switch
@@ -39,33 +45,41 @@ namespace ProfileEdit
                 _ => throw new Exception(),
             };
 
-            var siteState = state[row, col];
+            var siteState = boardState[row, col];
 
             if(siteState != 0)
             {
                 return;
             }
 
-            state[row, col] = ticTacType;
+            boardState[row, col] = ticTacType;
 
-            var result = CheckWinner(state);
+            var result = CheckWinner(boardState);
 
-            if(result == -1)
-            {
-                state = new int [3, 3];
-            }
+            SaveState(boardState);
 
-            SaveState(state);
-
-            var nextType = GetNextType(state);
-            var stateText = StateToDisplay(state);
+            var nextType = GetNextType(boardState);
+            var stateText = StateToDisplay(boardState);
 
             var filePath = Path.Combine(pathPrefix, profileFileName);
 
             File.Delete(filePath);
             using var writer = File.CreateText(filePath);
-            writer.WriteLine($"下一個 {(nextType == 1 ? "Ｏ":"Ｘ")}<br/>");
+            writer.WriteLine(GetTitle(boardState));
             writer.WriteLine(stateText);
+        }
+
+        private static string GetTitle(int[,] boardState)
+        {
+            var nextType = GetNextType(boardState);
+            var winner = CheckWinner(boardState);
+
+            if (winner == 1 || winner == 2)
+            {
+                return $"獲勝者: {(winner == 1 ? "Ｏ" : "Ｘ")} 請重新開始下一局<br/><br/>";
+            }
+
+            return $"下一個 {(nextType == 1 ? "Ｏ" : "Ｘ")}<br/><br/>";
         }
 
         private static int[,] GetState()
@@ -78,29 +92,29 @@ namespace ProfileEdit
                 state = reader.ReadLine();
             }
 
-            var result = new int[3, 3];
+            var boardState = new int[3, 3];
             var stateNum = state!.Split(",").Select(x => Convert.ToInt32(x)).ToArray();
 
             for(int i = 0; i<=2; i++)
             {
                 for(int j = 0; j <=2; j++)
                 {
-                    result[i, j] = stateNum[i * 3 + j];
+                    boardState[i, j] = stateNum[i * 3 + j];
                 }
             }
 
-            return result;
+            return boardState;
         }
 
-        private static void SaveState(int[, ] state)
+        private static void SaveState(int[, ] boardState)
         {
             var filePath = Path.Combine(resourcePathPrefix, stateFileName);
             File.Delete(filePath);
             using var writer = File.CreateText(filePath);
-            writer.WriteLine(string.Join(",", ConverToSingleArray(state)));
+            writer.WriteLine(string.Join(",", ConverToSingleArray(boardState)));
         }
 
-        private static string StateToDisplay(int[,] state)
+        private static string StateToDisplay(int[,] boardState)
         {
             var text = new StringBuilder();
 
@@ -111,7 +125,7 @@ namespace ProfileEdit
 
                 for(int j = 0; j<=2; j++)
                 {
-                    line[j] = state[i, j] switch
+                    line[j] = boardState[i, j] switch
                     {
                         0 => "　",
                         1 => "Ｏ",
@@ -182,6 +196,21 @@ namespace ProfileEdit
             return  ConverToSingleArray(state).AsEnumerable().Count(x => x == 1) <= ConverToSingleArray(state).AsEnumerable().Count(x => x == 2)
                 ? 1
                 : 2;
+        }
+
+        private static void Restart()
+        {
+            var newBoardState = new int[3, 3];
+            var nextType = GetNextType(newBoardState);
+
+            SaveState(newBoardState);
+            var stateText = StateToDisplay(newBoardState);
+
+            var filePath = Path.Combine(pathPrefix, profileFileName);
+            File.Delete(filePath);
+            using var writer = File.CreateText(filePath);
+            writer.WriteLine($"下一個 {(nextType == 1 ? "Ｏ" : "Ｘ")}<br/>");
+            writer.WriteLine(stateText);
         }
     }
 }
