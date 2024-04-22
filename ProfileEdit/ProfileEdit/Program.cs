@@ -107,13 +107,13 @@ namespace ProfileEdit
                 return "　";
             }
 
-            var targetSite = row switch
+            var targetSite = col switch
             {
                 0 => "A",
                 1 => "B",
                 2 => "C",
                 _ => throw new NotImplementedException()
-            } + (col + 1);
+            } + (row + 1);
 
             return $"<a href=\"https://github.com/dylan724254/dylan724254/issues/new?body=%E8%AB%8B%E9%BB%9E%E6%93%8ASubmit%20new%20issue%E4%B8%8D%E9%9C%80%E8%A6%81%E4%BF%AE%E6%94%B9%E4%BB%BB%E4%BD%95%E5%85%A7%E5%AE%B9Thanks&title={targetSite}\">點</a>";
         }
