@@ -23,7 +23,7 @@ jobs:
       run: dotnet build ProfileEdit/ProfileEdit/ProfileEdit.csproj
       
     - name: Run
-      run: dotnet run --project ProfileEdit/ProfileEdit/ProfileEdit.csproj
+      run: dotnet run ${{ github.event.issue.title }} --project ProfileEdit/ProfileEdit/ProfileEdit.csproj
       
     - name: Commit and push changes
       env:
