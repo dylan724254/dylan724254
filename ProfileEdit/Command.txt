@@ -1,0 +1,4 @@
+dotnet build ProfileEdit/ProfileEdit/ProfileEdit.csproj
+dotnet run --project ProfileEdit/ProfileEdit/ProfileEdit.csproj
+
+dotnet run B3 --project ProfileEdit/ProfileEdit/ProfileEdit.csproj
