@@ -76,7 +76,7 @@ namespace ProfileEdit
             using var writer = File.CreateText(filePath);
             writer.WriteLine(GetTitle(boardState));
             writer.WriteLine(StateToDisplay(boardState));
-            writer.WriteLine($"<br/>最後玩家 <a href=\"https://github.com/{player}\">@{player}</a>");
+            writer.WriteLine($"<br/>最後玩家 <a href=\"https://github.com/{player}\">@{player}</a> {DateTime.UtcNow.AddHours(8):yyyy/MM/dd HH:mm:ss}");
             writer.WriteLine(GetSelectArea(boardState));
         }
 
