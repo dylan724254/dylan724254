@@ -85,10 +85,10 @@ namespace ProfileEdit
 
             if (winner == 1 || winner == 2)
             {
-                return $"獲勝者: {(winner == 1 ? GetImage(ImageType.Circle, 30, 30) : GetImage(ImageType.Crosses, 30, 30))} 請重新開始下一局<br/><br/>";
+                return $"獲勝者: {(winner == 1 ? GetImage(ImageType.Circle, 25, 25) : GetImage(ImageType.Crosses, 25, 25))} 請重新開始下一局<br/><br/>";
             }
 
-            return $"# 下一個 {(nextType == 1 ? GetImage(ImageType.Circle, 30, 30) : GetImage(ImageType.Crosses, 30, 30))}<br/>";
+            return $"## 下一個 {(nextType == 1 ? GetImage(ImageType.Circle, 25, 25) : GetImage(ImageType.Crosses, 25, 25))}<br/>";
         }
 
         private static string GetSelectArea(int[,] boardState)
@@ -96,7 +96,7 @@ namespace ProfileEdit
             var text = new StringBuilder();
             text.AppendLine("<br/>");
             text.AppendLine();
-            text.AppendLine("# 選擇位置");
+            text.AppendLine("## 選擇位置");
             text.AppendLine("<br/>");
             text.AppendLine();
             text.AppendLine("|1|2|3|");
@@ -174,9 +174,9 @@ namespace ProfileEdit
                 {
                     line[j] = boardState[i, j] switch
                     {
-                        0 => GetImage(ImageType.None2, 180, 180),
-                        1 => GetImage(ImageType.Circle2, 180, 180),
-                        2 => GetImage(ImageType.Crosses2, 180, 180),
+                        0 => GetImage(ImageType.None2, 150, 150),
+                        1 => GetImage(ImageType.Circle2, 150, 150),
+                        2 => GetImage(ImageType.Crosses2, 150, 150),
                     };
                 }
 
