@@ -38,7 +38,7 @@ namespace ProfileEdit
 
             if (site == "RE")
             {
-                Restart();
+                Restart(player);
                 return;
             }
 
@@ -256,12 +256,12 @@ namespace ProfileEdit
                 : 2;
         }
 
-        private static void Restart()
+        private static void Restart(string player)
         {
             var newBoardState = new int[3, 3];
 
             SaveState(newBoardState);
-            ReGenerateREADME(newBoardState);
+            ReGenerateREADME(player, newBoardState);
         }
 
         private static string GetImage(ImageType type, int width, int height)
