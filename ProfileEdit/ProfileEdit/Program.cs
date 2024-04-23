@@ -13,9 +13,14 @@ namespace ProfileEdit
         const string resourcePathPrefix = @"ProfileEdit/Resource";
         const string stateFileName = "state.txt";
 
-        const string _circle = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/o2.jpg?raw=true\" style=\"width:180px; height:180px\">";
-        const string _crosses = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/x2.jpg?raw=true\" style=\"width:180px; height:180px\">";
-        const string _none = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/none2.jpg?raw=true\" style=\"width:180px; height:180px\">";
+        const string _circle = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/o.jpg?raw=true\" style=\"width:@width@px; height:@height@px\">";
+        const string _circle2 = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/o2.jpg?raw=true\" style=\"width:@width@px; height:@height@px\">";
+        const string _crosses = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/x.jpg?raw=true\" style=\"width:@width@px; height:@height@px\">";
+        const string _crosses2 = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/x2.jpg?raw=true\" style=\"width:@width@px; height:@height@px\">";
+        const string _none = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/none.jpg?raw=true\" style=\"width:@width@px; height:@height@px\">";
+        const string _none2 = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/none2.jpg?raw=true\" style=\"width:@width@px; height:@height@px\">";
+        const string _restart = "<img src=\"https://github.com/dylan724254/dylan724254/blob/main/ProfileEdit/Img/restart.jpg?raw=true\" style=\"width:@width@px; height:@height@px\">";
+
         static void Main(string[] args)
         {
             if (args == null || args.Length != 1)
@@ -58,15 +63,18 @@ namespace ProfileEdit
             boardState[row, col] = ticTacType;
 
             SaveState(boardState);
+            ReGenerateREADME(boardState);
+        }
 
-            var stateText = StateToDisplay(boardState);
-
+        private static void ReGenerateREADME(int[,] boardState)
+        {
             var filePath = Path.Combine(pathPrefix, profileFileName);
 
             File.Delete(filePath);
+
             using var writer = File.CreateText(filePath);
             writer.WriteLine(GetTitle(boardState));
-            writer.WriteLine(stateText);
+            writer.WriteLine(StateToDisplay(boardState));
             writer.WriteLine(GetSelectArea(boardState));
         }
 
@@ -77,16 +85,19 @@ namespace ProfileEdit
 
             if (winner == 1 || winner == 2)
             {
-                return $"獲勝者: {(winner == 1 ? "Ｏ" : "Ｘ")} 請重新開始下一局<br/><br/>";
+                return $"獲勝者: {(winner == 1 ? GetImage(ImageType.Circle, 30, 30) : GetImage(ImageType.Crosses, 30, 30))} 請重新開始下一局<br/><br/>";
             }
 
-            return $"下一個 {(nextType == 1 ? "Ｏ" : "Ｘ")}<br/><br/>";
+            return $"# 下一個 {(nextType == 1 ? GetImage(ImageType.Circle, 30, 30) : GetImage(ImageType.Crosses, 30, 30))}<br/>";
         }
 
         private static string GetSelectArea(int[,] boardState)
         {
             var text = new StringBuilder();
-            text.AppendLine("<br/><br/>選擇位置<br/>");
+            text.AppendLine("<br/>");
+            text.AppendLine();
+            text.AppendLine("# 選擇位置");
+            text.AppendLine("<br/>");
             text.AppendLine();
             text.AppendLine("|1|2|3|");
             text.AppendLine("|:----:|:----:|:----:|");
@@ -94,8 +105,8 @@ namespace ProfileEdit
             {
                 text.AppendLine($"|{GetSelectPoint(boardState, i, 0)}|{GetSelectPoint(boardState, i, 1)}|{GetSelectPoint(boardState, i, 2)}|");
             }
-            text.AppendLine("<br/>");
-            text.AppendLine($"重啟新局: <a href=\"https://github.com/dylan724254/dylan724254/issues/new?body=%E8%AB%8B%E9%BB%9E%E6%93%8ASubmit%20new%20issue%E4%B8%8D%E9%9C%80%E8%A6%81%E4%BF%AE%E6%94%B9%E4%BB%BB%E4%BD%95%E5%85%A7%E5%AE%B9Thanks&title=RE\">點擊</a>");
+            text.AppendLine();
+            text.AppendLine($"<a href=\"https://github.com/dylan724254/dylan724254/issues/new?body=%E8%AB%8B%E9%BB%9E%E6%93%8ASubmit%20new%20issue%E4%B8%8D%E9%9C%80%E8%A6%81%E4%BF%AE%E6%94%B9%E4%BB%BB%E4%BD%95%E5%85%A7%E5%AE%B9Thanks&title=RE\">{GetImage(ImageType.Restart, 130, 60)}</a>");
 
             return text.ToString();
         }
@@ -153,6 +164,7 @@ namespace ProfileEdit
         private static string StateToDisplay(int[,] boardState)
         {
             var text = new StringBuilder();
+            text.AppendLine("<br/>");
 
             for (int i = 0; i <= 2; i++)
             {
@@ -162,9 +174,9 @@ namespace ProfileEdit
                 {
                     line[j] = boardState[i, j] switch
                     {
-                        0 => _none,
-                        1 => _circle,
-                        2 => _crosses,
+                        0 => GetImage(ImageType.None2, 180, 180),
+                        1 => GetImage(ImageType.Circle2, 180, 180),
+                        2 => GetImage(ImageType.Crosses2, 180, 180),
                     };
                 }
 
@@ -244,17 +256,37 @@ namespace ProfileEdit
         private static void Restart()
         {
             var newBoardState = new int[3, 3];
-            var nextType = GetNextType(newBoardState);
 
             SaveState(newBoardState);
-            var stateText = StateToDisplay(newBoardState);
-
-            var filePath = Path.Combine(pathPrefix, profileFileName);
-            File.Delete(filePath);
-            using var writer = File.CreateText(filePath);
-            writer.WriteLine($"下一個 {(nextType == 1 ? "Ｏ" : "Ｘ")}<br/>");
-            writer.WriteLine(stateText);
-            writer.WriteLine(GetSelectArea(newBoardState));
+            ReGenerateREADME(newBoardState);
         }
+
+        private static string GetImage(ImageType type, int width, int height)
+        {
+            var imageTemplate = type switch
+            {
+                ImageType.Circle => _circle,
+                ImageType.Circle2 => _circle2,
+                ImageType.Crosses => _crosses,
+                ImageType.Crosses2 => _crosses2,
+                ImageType.None => _none,
+                ImageType.None2 => _none2,
+                ImageType.Restart => _restart,
+                _ => string.Empty
+            };
+
+            return imageTemplate.Replace("@width@", $"{width}").Replace("@height@", $"{height}");
+        }
+    }
+
+    public enum ImageType
+    {
+        Circle,
+        Circle2,
+        Crosses,
+        Crosses2,
+        None,
+        None2,
+        Restart,
     }
 }
