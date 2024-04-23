@@ -23,12 +23,13 @@ namespace ProfileEdit
 
         static void Main(string[] args)
         {
-            if (args == null || args.Length != 1)
+            if (args == null || args.Length != 2)
             {
                 return;
             }
 
             var site = args[0];
+            var player = args[1];
 
             if (!Regex.IsMatch(site, "([A,B,C][1,2,3]|RE)"))
             {
@@ -63,10 +64,10 @@ namespace ProfileEdit
             boardState[row, col] = ticTacType;
 
             SaveState(boardState);
-            ReGenerateREADME(boardState);
+            ReGenerateREADME(player, boardState);
         }
 
-        private static void ReGenerateREADME(int[,] boardState)
+        private static void ReGenerateREADME(string player, int[,] boardState)
         {
             var filePath = Path.Combine(pathPrefix, profileFileName);
 
@@ -75,8 +76,10 @@ namespace ProfileEdit
             using var writer = File.CreateText(filePath);
             writer.WriteLine(GetTitle(boardState));
             writer.WriteLine(StateToDisplay(boardState));
+            writer.WriteLine($"<br/>\"最後玩家 <a href=\"https://github.com/{player}\">@{player}</a>");
             writer.WriteLine(GetSelectArea(boardState));
         }
+
 
         private static string GetTitle(int[,] boardState)
         {
@@ -85,7 +88,7 @@ namespace ProfileEdit
 
             if (winner == 1 || winner == 2)
             {
-                return $"獲勝者: {(winner == 1 ? GetImage(ImageType.Circle, 25, 25) : GetImage(ImageType.Crosses, 25, 25))} 請重新開始下一局<br/><br/>";
+                return $"獲勝者: {(winner == 1 ? GetImage(ImageType.Circle, 25, 25) : GetImage(ImageType.Crosses, 25, 25))} 請重新開始下一局　　<br/>";
             }
 
             return $"## 下一個 {(nextType == 1 ? GetImage(ImageType.Circle, 25, 25) : GetImage(ImageType.Crosses, 25, 25))}<br/>";
